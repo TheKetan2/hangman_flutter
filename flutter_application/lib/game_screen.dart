@@ -14,6 +14,7 @@ class _GameScreenState extends State<GameScreen> {
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
+        centerTitle: true,
         title: Text(
           "Hangman",
           style: restroStyle(20, Colors.white, FontWeight.bold),
