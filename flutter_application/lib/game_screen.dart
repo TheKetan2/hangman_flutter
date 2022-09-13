@@ -19,6 +19,8 @@ class _GameScreenState extends State<GameScreen> {
   int status = 0;
   bool isWon = false;
 
+  restart() {}
+
   handleText() {
     String displayedWOrd = "";
     for (int i = 0; i < word.length; i++) {
@@ -53,6 +55,86 @@ class _GameScreenState extends State<GameScreen> {
       print("You Lost");
     }
     handleText();
+
+    if (isWon) {
+      // showDialogue("You Won!");
+      openDialogue("You Won!");
+    }
+    if (status == 6) {
+      // showDialogue("You Lost!");
+      openDialogue("You Lost!");
+    }
+  }
+
+  openDialogue(String title) {
+    return showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (context) {
+          return Dialog(
+            child: Container(
+              width: MediaQuery.of(context).size.width / 2,
+              height: 180,
+              decoration: const BoxDecoration(
+                color: Colors.purpleAccent,
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    title,
+                    style: retroStyle(
+                      25,
+                      Colors.white,
+                      FontWeight.bold,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(
+                    height: 5,
+                  ),
+                  Text(
+                    "Your points: $points",
+                    style: retroStyle(
+                      25,
+                      Colors.white,
+                      FontWeight.bold,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  Container(
+                    margin: const EdgeInsets.only(top: 20),
+                    width: MediaQuery.of(context).size.width / 2,
+                    child: TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+
+                        setState(() {
+                          points = 0;
+                          status = 0;
+                          word = wordsList[Random().nextInt(wordsList.length)];
+                          guessedChars.clear();
+                          userGuess = handleText();
+                          isWon = false;
+                        });
+                      },
+                      child: Center(
+                        child: Text(
+                          "Restart",
+                          style: retroStyle(
+                            20,
+                            Colors.white,
+                            FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        });
   }
 
   @override
@@ -89,14 +171,14 @@ class _GameScreenState extends State<GameScreen> {
             children: [
               Container(
                 width: MediaQuery.of(context).size.width / 3.5,
-                decoration: BoxDecoration(color: Colors.blue),
-                margin: EdgeInsets.only(top: 20),
+                decoration: const BoxDecoration(color: Colors.blue),
+                margin: const EdgeInsets.only(top: 20),
                 child: Text(
                   "$points Points",
                   style: retroStyle(15, Colors.black, FontWeight.bold),
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 20,
               ),
               Image(
@@ -106,12 +188,12 @@ class _GameScreenState extends State<GameScreen> {
                 color: Colors.white,
                 fit: BoxFit.cover,
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               Text(
                 "${6 - status} lives left ${userGuess == word ? " Won" : ""}",
                 style: retroStyle(15, Colors.grey, FontWeight.bold),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 30,
               ),
               Text(
