@@ -1,5 +1,7 @@
 import 'dart:ffi';
 
+import 'package:audioplayers/audioplayers.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_application/utils.dart';
 import 'dart:math';
@@ -12,15 +14,24 @@ class GameScreen extends StatefulWidget {
 }
 
 class _GameScreenState extends State<GameScreen> {
+  final player = AudioPlayer();
+
   String word = wordsList[Random().nextInt(wordsList.length)];
   List guessedChars = [];
   String userGuess = "";
   int points = 0;
   int status = 0;
   bool isWon = false;
+  bool soundOn = true;
+//************** */
 
-  restart() {}
+  playSound(String sound) async {
+    if (soundOn) {
+      await player.play(AssetSource('sounds/$sound'));
+    }
+  }
 
+//************** */
   handleText() {
     String displayedWOrd = "";
     for (int i = 0; i < word.length; i++) {
@@ -28,8 +39,10 @@ class _GameScreenState extends State<GameScreen> {
 
       if (guessedChars.contains(char)) {
         displayedWOrd += char;
+        playSound("correct.mp3");
       } else {
         displayedWOrd += "?";
+        playSound("wrong.mp3");
       }
     }
     print("$displayedWOrd");
@@ -58,10 +71,14 @@ class _GameScreenState extends State<GameScreen> {
 
     if (isWon) {
       // showDialogue("You Won!");
+      playSound("won.mp3");
+
       openDialogue("You Won!");
     }
     if (status == 6) {
       // showDialogue("You Lost!");
+      playSound("lost.mp3");
+
       openDialogue("You Lost!");
     }
   }
@@ -107,6 +124,8 @@ class _GameScreenState extends State<GameScreen> {
                     width: MediaQuery.of(context).size.width / 2,
                     child: TextButton(
                       onPressed: () {
+                        playSound("restart.mp3");
+
                         Navigator.pop(context);
 
                         setState(() {
@@ -157,10 +176,14 @@ class _GameScreenState extends State<GameScreen> {
         backgroundColor: Colors.black,
         actions: [
           IconButton(
-              onPressed: () {},
-              icon: const Icon(
-                Icons.volume_up_sharp,
-                color: Colors.purpleAccent,
+              onPressed: () {
+                setState(() {
+                  soundOn = !soundOn;
+                });
+              },
+              icon: Icon(
+                soundOn ? Icons.volume_up_sharp : Icons.volume_mute,
+                color: soundOn ? Colors.green : Colors.redAccent,
               ))
         ],
       ),
