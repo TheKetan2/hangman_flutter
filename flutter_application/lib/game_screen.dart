@@ -1,7 +1,6 @@
 import 'dart:ffi';
 
 import 'package:audioplayers/audioplayers.dart';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_application/utils.dart';
 import 'dart:math';
@@ -14,8 +13,6 @@ class GameScreen extends StatefulWidget {
 }
 
 class _GameScreenState extends State<GameScreen> {
-  final player = AudioPlayer();
-
   String word = wordsList[Random().nextInt(wordsList.length)];
   List guessedChars = [];
   String userGuess = "";
@@ -23,11 +20,14 @@ class _GameScreenState extends State<GameScreen> {
   int status = 0;
   bool isWon = false;
   bool soundOn = true;
+
+  final player = AudioPlayer();
+
 //************** */
 
   playSound(String sound) async {
     if (soundOn) {
-      await player.play(AssetSource('sounds/$sound'));
+      await player.play(AssetSource(sound));
     }
   }
 
