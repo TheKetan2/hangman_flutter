@@ -1,5 +1,8 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_application/utils.dart';
+import 'dart:math';
 
 class GameScreen extends StatefulWidget {
   const GameScreen({Key? key}) : super(key: key);
@@ -9,6 +12,56 @@ class GameScreen extends StatefulWidget {
 }
 
 class _GameScreenState extends State<GameScreen> {
+  String word = wordsList[Random().nextInt(wordsList.length)];
+  List guessedChars = [];
+  String userGuess = "";
+  int points = 0;
+  int status = 0;
+  bool isWon = false;
+
+  handleText() {
+    String displayedWOrd = "";
+    for (int i = 0; i < word.length; i++) {
+      String char = word[i];
+
+      if (guessedChars.contains(char)) {
+        displayedWOrd += char;
+      } else {
+        displayedWOrd += "?";
+      }
+    }
+    print("$displayedWOrd");
+
+    setState(() {
+      userGuess = displayedWOrd;
+      isWon = displayedWOrd == word;
+    });
+  }
+
+  handleKeyboard(String char) {
+    if (word.contains(char)) {
+      setState(() {
+        guessedChars.add(char);
+        points += 5;
+      });
+    } else if (status != 6) {
+      setState(() {
+        points -= 5;
+        status++;
+      });
+    } else {
+      print("You Lost");
+    }
+    handleText();
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    handleText();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -39,7 +92,7 @@ class _GameScreenState extends State<GameScreen> {
                 decoration: BoxDecoration(color: Colors.blue),
                 margin: EdgeInsets.only(top: 20),
                 child: Text(
-                  "12 Points",
+                  "$points Points",
                   style: retroStyle(15, Colors.black, FontWeight.bold),
                 ),
               ),
@@ -47,7 +100,7 @@ class _GameScreenState extends State<GameScreen> {
                 height: 20,
               ),
               Image(
-                image: AssetImage("images/hangman0.png"),
+                image: AssetImage("images/hangman$status.png"),
                 width: 150,
                 height: 150,
                 color: Colors.white,
@@ -55,14 +108,14 @@ class _GameScreenState extends State<GameScreen> {
               ),
               SizedBox(height: 20),
               Text(
-                "5 lifes left",
+                "${6 - status} lives left ${userGuess == word ? " Won" : ""}",
                 style: retroStyle(15, Colors.grey, FontWeight.bold),
               ),
               SizedBox(
                 height: 30,
               ),
               Text(
-                "??????",
+                userGuess,
                 style: retroStyle(35, Colors.white, FontWeight.bold),
                 textAlign: TextAlign.center,
               ),
@@ -74,13 +127,16 @@ class _GameScreenState extends State<GameScreen> {
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
                 children: alphabets
-                    .map((e) => InkWell(
-                          onTap: () {
-                            print("pressed $e");
-                          },
+                    .map((char) => InkWell(
+                          onTap: status != 6
+                              ? () {
+                                  print("pressed $char ");
+                                  handleKeyboard(char);
+                                }
+                              : null,
                           child: Center(
                             child: Text(
-                              e,
+                              char,
                               style:
                                   retroStyle(20, Colors.white, FontWeight.bold),
                             ),
@@ -88,6 +144,18 @@ class _GameScreenState extends State<GameScreen> {
                         ))
                     .toList(),
               ),
+              isWon
+                  ? Text(
+                      "You Won",
+                      style: retroStyle(20, Colors.white, FontWeight.bold),
+                    )
+                  : Container(),
+              status == 6
+                  ? Text(
+                      "You Lost",
+                      style: retroStyle(20, Colors.white, FontWeight.bold),
+                    )
+                  : Container(),
             ],
           ),
         ),

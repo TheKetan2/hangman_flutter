@@ -13,6 +13,11 @@ TextStyle retroStyle(
   );
 }
 
+List wordsList = [
+  "FLUTTER",
+  "GOOGLE",
+  "APPLE",
+];
 List alphabets = [
   "A",
   "B",
