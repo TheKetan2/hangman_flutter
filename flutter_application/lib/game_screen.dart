@@ -17,7 +17,7 @@ class _GameScreenState extends State<GameScreen> {
         centerTitle: true,
         title: Text(
           "Hangman",
-          style: restroStyle(20, Colors.white, FontWeight.bold),
+          style: retroStyle(20, Colors.white, FontWeight.bold),
         ),
         backgroundColor: Colors.black,
         actions: [
@@ -40,7 +40,7 @@ class _GameScreenState extends State<GameScreen> {
                 margin: EdgeInsets.only(top: 20),
                 child: Text(
                   "12 Points",
-                  style: restroStyle(15, Colors.black, FontWeight.bold),
+                  style: retroStyle(15, Colors.black, FontWeight.bold),
                 ),
               ),
               SizedBox(
@@ -56,9 +56,38 @@ class _GameScreenState extends State<GameScreen> {
               SizedBox(height: 20),
               Text(
                 "5 lifes left",
-                style: restroStyle(15, Colors.grey, FontWeight.bold),
+                style: retroStyle(15, Colors.grey, FontWeight.bold),
               ),
-              
+              SizedBox(
+                height: 30,
+              ),
+              Text(
+                "??????",
+                style: retroStyle(35, Colors.white, FontWeight.bold),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              GridView.count(
+                crossAxisCount: 7,
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                children: alphabets
+                    .map((e) => InkWell(
+                          onTap: () {
+                            print("pressed $e");
+                          },
+                          child: Center(
+                            child: Text(
+                              e,
+                              style:
+                                  retroStyle(20, Colors.white, FontWeight.bold),
+                            ),
+                          ),
+                        ))
+                    .toList(),
+              ),
             ],
           ),
         ),
